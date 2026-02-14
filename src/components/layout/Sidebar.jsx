@@ -17,7 +17,7 @@ import {
   Mail,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
-import logo from "../../assets/WhatsApp Image 2026-01-27 at 6.42.11 PM.jpeg";
+import logo from "../../assets/hirehand-rmbg.png";
 
 export default function Sidebar({ isOpen }) {
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ export default function Sidebar({ isOpen }) {
     >
       {/* LOGO */}
       <div className="px-6 py-5 border-b border-[#f1f1f1] flex items-center justify-center gap-3">
-        <img src={logo} className="h-10 w-10 object-contain" alt="logo" />
+        <img src={logo} className="h-10 w-10 scale-150 object-contain" alt="logo" />
 
         {isOpen && (
           <span className="text-lg font-semibold tracking-wide text-gray-800">
@@ -242,23 +242,31 @@ export default function Sidebar({ isOpen }) {
           icon={<FileText size={18} />}
           label="Transactions"
           isOpen={isOpen}
-          onClick={() => handleNavigation("/reviews")}
-          isActive={location.pathname === "/reviews"}
+          onClick={() => handleNavigation("/transactions")}
+          isActive={location.pathname === "/transactions"}
         />
         <MenuItem
           icon={<DollarSign size={18} />}
           label="Payment Refunds"
           isOpen={isOpen}
-          onClick={() => handleNavigation("/support-tickets")}
-          isActive={location.pathname === "/support-tickets"}
+          onClick={() => handleNavigation("/payment-refunds")}
+          isActive={location.pathname === "/payment-refunds"}
         />
-        <MenuItem icon={<Home size={18} />} label="Addresses" isOpen={isOpen} />
+        <MenuItem 
+          icon={<Home size={18}/>}
+          label="Addresses"
+          isOpen={isOpen} 
+          onClick={()=>handleNavigation("/addresses")}
+          isActive={location.pathname==="/addresses"}  
+        />
 
         {isOpen && section("Support Management")}
         <MenuItem
           icon={<HelpCircle size={18} />}
           label="User Queries"
           isOpen={isOpen}
+          onClick={() => handleNavigation("/user-queries")}
+          isActive={location.pathname === "/user-queries"}
         />
         <MenuItem
           icon={<ClipboardList size={18} />}
@@ -328,7 +336,7 @@ export default function Sidebar({ isOpen }) {
           isOpen={isOpen}
           isAnySubitemActive={
             location.pathname === "/subscriptions" ||
-            location.pathname === "/subscribers" ||
+            location.pathname === "/subscriber-list" ||
             location.pathname === "/add-subscription"
           }
         >
@@ -340,8 +348,8 @@ export default function Sidebar({ isOpen }) {
 
           <SubItem
             text="Subscriber List"
-            onClick={() => handleNavigation("/subscribers")}
-            isActive={location.pathname === "/subscribers"}
+            onClick={() => handleNavigation("/subscriber-list")}
+            isActive={location.pathname === "/subscriber-list"}
           />
 
           <SubItem

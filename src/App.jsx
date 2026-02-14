@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import "./App.css";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { RouterProvider, createBrowserRouter, Navigate } from "react-router-dom";
 import { useAuth } from "./hooks";
 import ScrollRestoration from "./components/ScrollToTop";
+import ProtectedRoute from "./components/ProtectedRoute";
 import LoginPage from "./pages/Login";
 import DashboardPage from "./pages/dashboard/Dashboard";
 import ProvidersPage from "./pages/providers/ProvidersList";
@@ -23,142 +24,321 @@ import ServiceCategoriesPage from "./pages/serviceCategories/ServiceCategories";
 import SlidersPage from "./pages/slider/Sliders";
 import FeaturedSectionPage from "./pages/featuredSection/FeaturedSection";
 import CustomersPage from "./pages/Customers";
+import TransactionsPage from "./pages/transactions/Transactions";
+import PaymentRefundsPage from "./pages/paymentRefunds/PaymentRefunds";
+import AddressesPage from "./pages/addresses/Addresses";
+import UserQueriesPage from "./pages/userQueries/UserQueries";
 import ReviewsRatingsPage from "./pages/reviewsRatings/ReviewsRatings";
 import SupportTicketsPage from "./pages/SupportTickets";
 import PromoCodesPage from "./pages/PromoCodes";
 import PromoUsagePage from "./pages/PromoUsage";
 import NotificationsPage from "./pages/Notifications";
 import EmailPage from "./pages/Email";
+import SubscriptionsPage from "./pages/subscription/Subscriptions";
+import SubscriberListPage from "./pages/subscription/SubscriberList";
 import SystemSettingsPage from "./pages/SystemSettings";
 import FAQsPage from "./pages/FAQs";
 import SystemUsersPage from "./pages/SystemUsers";
 import DatabaseBackupPage from "./pages/DatabaseBackup";
 
 function App() {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
 
   const router = createBrowserRouter([
     {
       path: "/login",
-      element: <LoginPage />,
+      element: isLoggedIn ? <Navigate to="/" replace /> : <LoginPage />,
     },
     {
       path: "/",
-      element: isLoggedIn ? <DashboardPage /> : <LoginPage />,
+      element: (
+        <ProtectedRoute>
+          <DashboardPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/providers-list",
-      element: <ProvidersPage />,
+      element: (
+        <ProtectedRoute>
+          <ProvidersPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/providers/add",
-      element: <AddNewProvidersPage />,
+      element: (
+        <ProtectedRoute>
+          <AddNewProvidersPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/providers/bulk-update",
-      element: <BulkProviderUpdatePage />,
+      element: (
+        <ProtectedRoute>
+          <BulkProviderUpdatePage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/payment-request",
-      element: <PaymentRequestPage />,
+      element: (
+        <ProtectedRoute>
+          <PaymentRequestPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/settlements",
-      element: <SettlementsPage />,
+      element: (
+        <ProtectedRoute>
+          <SettlementsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/settlement-history",
-      element: <SettlementHistoryPage />,
+      element: (
+        <ProtectedRoute>
+          <SettlementHistoryPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/cash-collection",
-      element: <CashCollectionPage />,
+      element: (
+        <ProtectedRoute>
+          <CashCollectionPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/cash-collection-list",
-      element: <CashCollectionListPage />,
+      element: (
+        <ProtectedRoute>
+          <CashCollectionListPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/bookings",
-      element: <BookingsPage />,
+      element: (
+        <ProtectedRoute>
+          <BookingsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/booking-payment",
-      element: <BookingPaymentPage />,
+      element: (
+        <ProtectedRoute>
+          <BookingPaymentPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/custom-jobs",
-      element: <CustomJobRequestsPage />,
+      element: (
+        <ProtectedRoute>
+          <CustomJobRequestsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/services",
-      element: <ServicesPage />,
+      element: (
+        <ProtectedRoute>
+          <ServicesPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/services/add",
-      element: <AddNewServicePage />,
+      element: (
+        <ProtectedRoute>
+          <AddNewServicePage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/services/bulk-update",
-      element: <BulkServiceUpdatePage />,
+      element: (
+        <ProtectedRoute>
+          <BulkServiceUpdatePage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/service-categories",
-      element: <ServiceCategoriesPage />,
+      element: (
+        <ProtectedRoute>
+          <ServiceCategoriesPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/sliders",
-      element: <SlidersPage />,
+      element: (
+        <ProtectedRoute>
+          <SlidersPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/featured-section",
-      element: <FeaturedSectionPage />,
+      element: (
+        <ProtectedRoute>
+          <FeaturedSectionPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/customers",
-      element: <CustomersPage />,
+      element: (
+        <ProtectedRoute>
+          <CustomersPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/transactions",
+      element: (
+        <ProtectedRoute>
+          <TransactionsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/payment-refunds",
+      element: (
+        <ProtectedRoute>
+          <PaymentRefundsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/addresses",
+      element: (
+        <ProtectedRoute>
+          <AddressesPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/user-queries",
+      element: (
+        <ProtectedRoute>
+          <UserQueriesPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/reviews",
-      element: <ReviewsRatingsPage />,
+      element: (
+        <ProtectedRoute>
+          <ReviewsRatingsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/support-tickets",
-      element: <SupportTicketsPage />,
+      element: (
+        <ProtectedRoute>
+          <SupportTicketsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/promo-codes",
-      element: <PromoCodesPage />,
+      element: (
+        <ProtectedRoute>
+          <PromoCodesPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/promo-usage",
-      element: <PromoUsagePage />,
+      element: (
+        <ProtectedRoute>
+          <PromoUsagePage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/notifications",
-      element: <NotificationsPage />,
+      element: (
+        <ProtectedRoute>
+          <NotificationsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/subscriptions",
+      element: (
+        <ProtectedRoute>
+          <SubscriptionsPage />
+        </ProtectedRoute>
+      ),
+    },
+    {
+      path: "/subscriber-list",
+      element: (
+        <ProtectedRoute>
+          <SubscriberListPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/email",
-      element: <EmailPage />,
+      element: (
+        <ProtectedRoute>
+          <EmailPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/system-settings",
-      element: <SystemSettingsPage />,
+      element: (
+        <ProtectedRoute>
+          <SystemSettingsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/faqs",
-      element: <FAQsPage />,
+      element: (
+        <ProtectedRoute>
+          <FAQsPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/system-users",
-      element: <SystemUsersPage />,
+      element: (
+        <ProtectedRoute>
+          <SystemUsersPage />
+        </ProtectedRoute>
+      ),
     },
     {
       path: "/database-backup",
-      element: <DatabaseBackupPage />,
+      element: (
+        <ProtectedRoute>
+          <DatabaseBackupPage />
+        </ProtectedRoute>
+      ),
     },
   ]);
+
+  // Show loading spinner while checking auth state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-[#f6f7fb]">
+        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#0d6efd]"></div>
+      </div>
+    );
+  }
 
   return <RouterProvider router={router} />;
 }

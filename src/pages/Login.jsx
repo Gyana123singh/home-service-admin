@@ -1,27 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, Edit } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
 import { IMAGE_URLS } from "../constants";
+import logo1 from "../assets/home.jpg";
+import logo from "../assets/hirehand-rmbg.png";
 
 export default function LoginPage() {
   const [show, setShow] = useState(false);
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const { login, isLoggedIn } = useAuth();
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate("/");
+    }
+  }, [isLoggedIn, navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (phone && password) {
-      login({ phone, role: "admin" });
+      // Check credentials (demo - replace with real API call)
+      if (phone === "9876543210" && password === "12345678") {
+        setIsLoading(true);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+        login({ phone, role: "admin", name: "Admin User" });
+        navigate("/"); // Redirect to dashboard
+        setIsLoading(false);
+      } else {
+        alert("Invalid credentials! Use:\nPhone: 9876543210\nPassword: 12345678");
+      }
+    } else {
+      alert("Please enter both phone number and password");
     }
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex sticky">
       {/* LEFT IMAGE */}
       <div className="hidden lg:block w-2/3 relative">
         <img
-          src={IMAGE_URLS.CLEANING}
+          // src={IMAGE_URLS.CLEANING}
+          src={logo1}
           alt="cleaning"
           className="w-full h-full object-cover"
         />
@@ -33,8 +57,8 @@ export default function LoginPage() {
         <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8">
           {/* LOGO */}
           <div className="flex flex-col items-center mb-8">
-            <img src={IMAGE_URLS.LOGO} className="h-12 mb-2" alt="logo" />
-            <p className="text-sm text-gray-500">Home service</p>
+            <img src={logo} className="h-22 mb-2 scale-150" alt="logo" />
+            <p className="text-sm text-gray-800 font-semibold capitalize">Admin Panel of Home service</p>
           </div>
 
           {/* FORM */}
@@ -87,26 +111,26 @@ export default function LoginPage() {
               </a>
             </div>
 
-            {/* JOIN */}
-            <p className="text-center text-sm text-gray-500">
-              Don't have an account ?
-              <span className="text-blue-600 font-medium cursor-pointer">
-                {" "}
-                Join us as provider
-              </span>
-            </p>
 
             {/* LOGIN BUTTON */}
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-md font-semibold transition-colors"
+              disabled={isLoading}
+              className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-md font-semibold transition-colors flex items-center justify-center"
             >
-              Login
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
 
           {/* ADMIN + PROVIDER */}
-          <div className="grid grid-cols-2 gap-3 mt-4">
+          <div className="grid grid-cols-1 gap-3 mt-4">
             {/* ADMIN */}
             <div className="bg-blue-600 text-white rounded-lg p-4 relative">
               <h4 className="text-sm font-semibold">ADMIN LOGIN</h4>
@@ -119,7 +143,7 @@ export default function LoginPage() {
             </div>
 
             {/* PROVIDER */}
-            <div className="bg-gray-800 text-white rounded-lg p-4 relative">
+            {/* <div className="bg-gray-800 text-white rounded-lg p-4 relative">
               <h4 className="text-sm font-semibold">PROVIDER LOGIN</h4>
               <p className="text-xs mt-1">Mobile : 1234567890</p>
               <p className="text-xs">Password : 12345678</p>
@@ -127,20 +151,20 @@ export default function LoginPage() {
               <div className="absolute right-3 top-3 bg-white text-gray-800 p-2 rounded-md">
                 <Edit size={14} />
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* FOOTER */}
-          <p className="text-center text-xs text-gray-400 mt-6">
-            Copyright © 2025 eDemand. All rights reserved.
+          <p className="text-center text-xs text-gray-700 my-5">
+            Copyright © {new Date().getFullYear()} Hirehand. All rights reserved.
           </p>
 
           {/* NOTE */}
-          <div className="bg-orange-400 text-white text-xs p-3 rounded-md text-center">
+          {/* <div className="bg-orange-400 text-white text-xs p-3 rounded-md text-center">
             Note: If you cannot login here, please close the codecanyon frame by
             clicking on <b>x Remove Frame</b> button or{" "}
             <span className="underline cursor-pointer">Click here</span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>
