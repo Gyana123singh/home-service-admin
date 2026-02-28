@@ -1,193 +1,22 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import AdminLayout from "../components/layout/AdminLayout";
-import { FiHome, FiSearch, FiDownload, FiChevronDown, FiEye, FiEdit2, FiTrash2 } from "react-icons/fi";
-
-// Dummy customer data
-const dummyCustomers = [
-  {
-    id: "CUST001",
-    username: "jit806",
-    firstName: "Jit",
-    lastName: "Kumar",
-    email: "wrteam.ishra58@gmail.com",
-    mobile: "XXXX641",
-    displayMobile: "+91 9876541234",
-    avatar: "J",
-    avatarColor: "#c41e3a",
-    status: "Active",
-    joinDate: "2025-01-15",
-    totalOrders: 12,
-    totalSpent: 4500,
-  },
-  {
-    id: "CUST002",
-    username: "Frank Dan",
-    firstName: "Frank",
-    lastName: "Dan",
-    email: "wrteam.10011@gmail.com",
-    mobile: "XXXX6519",
-    displayMobile: "+91 9876546519",
-    avatar: "F",
-    avatarColor: "#4db8a8",
-    status: "Active",
-    joinDate: "2025-01-10",
-    totalOrders: 8,
-    totalSpent: 3200,
-  },
-  {
-    id: "CUST003",
-    username: "Bokhodir BADALOV",
-    firstName: "Bokhodir",
-    lastName: "BADALOV",
-    email: "wrteam.d26@privaterelay.appleid.com",
-    mobile: "XXXX76",
-    displayMobile: "+1 555 234 5676",
-    avatar: "B",
-    avatarColor: "#5fa876",
-    status: "Active",
-    joinDate: "2025-01-08",
-    totalOrders: 5,
-    totalSpent: 2100,
-  },
-  {
-    id: "CUST004",
-    username: "Bokhodir BADALOV",
-    firstName: "Bokhodir",
-    lastName: "BADALOV",
-    email: "wrteam.rbadalov@gmail.com",
-    mobile: "XXXX959",
-    displayMobile: "+1 555 876 5959",
-    avatar: "B",
-    avatarColor: "#7cb342",
-    status: "Active",
-    joinDate: "2025-01-05",
-    totalOrders: 15,
-    totalSpent: 5600,
-  },
-  {
-    id: "CUST005",
-    username: "Khadim Gueye",
-    firstName: "Khadim",
-    lastName: "Gueye",
-    email: "wrteam.il24@gmail.com",
-    mobile: "XXXX92",
-    displayMobile: "+221 7654321092",
-    avatar: "K",
-    avatarColor: "#76ff03",
-    status: "Active",
-    joinDate: "2024-12-28",
-    totalOrders: 22,
-    totalSpent: 7800,
-  },
-  {
-    id: "CUST006",
-    username: "Rashid Ahmed",
-    firstName: "Rashid",
-    lastName: "Ahmed",
-    email: "rashid.ahmed@gmail.com",
-    mobile: "XXXX345",
-    displayMobile: "+966 5123456789",
-    avatar: "R",
-    avatarColor: "#ff6f00",
-    status: "Inactive",
-    joinDate: "2024-12-20",
-    totalOrders: 3,
-    totalSpent: 1200,
-  },
-  {
-    id: "CUST007",
-    username: "Sarah Wilson",
-    firstName: "Sarah",
-    lastName: "Wilson",
-    email: "sarah.wilson@gmail.com",
-    mobile: "XXXX456",
-    displayMobile: "+1 555 654 3456",
-    avatar: "S",
-    avatarColor: "#e91e63",
-    status: "Active",
-    joinDate: "2024-12-15",
-    totalOrders: 18,
-    totalSpent: 6200,
-  },
-  {
-    id: "CUST008",
-    username: "Michael Brown",
-    firstName: "Michael",
-    lastName: "Brown",
-    email: "michael.brown@gmail.com",
-    mobile: "XXXX567",
-    displayMobile: "+1 555 765 4567",
-    avatar: "M",
-    avatarColor: "#2196f3",
-    status: "Active",
-    joinDate: "2024-12-10",
-    totalOrders: 9,
-    totalSpent: 3900,
-  },
-  {
-    id: "CUST009",
-    username: "Emma Davis",
-    firstName: "Emma",
-    lastName: "Davis",
-    email: "emma.davis@gmail.com",
-    mobile: "XXXX678",
-    displayMobile: "+44 7911 987654",
-    avatar: "E",
-    avatarColor: "#ff5722",
-    status: "Active",
-    joinDate: "2024-12-05",
-    totalOrders: 14,
-    totalSpent: 5100,
-  },
-  {
-    id: "CUST010",
-    username: "John Martinez",
-    firstName: "John",
-    lastName: "Martinez",
-    email: "john.martinez@gmail.com",
-    mobile: "XXXX789",
-    displayMobile: "+34 912 345 678",
-    avatar: "J",
-    avatarColor: "#009688",
-    status: "Inactive",
-    joinDate: "2024-11-30",
-    totalOrders: 2,
-    totalSpent: 800,
-  },
-  {
-    id: "CUST011",
-    username: "Lisa Chen",
-    firstName: "Lisa",
-    lastName: "Chen",
-    email: "lisa.chen@gmail.com",
-    mobile: "XXXX890",
-    displayMobile: "+86 10 1234 5678",
-    avatar: "L",
-    avatarColor: "#673ab7",
-    status: "Active",
-    joinDate: "2024-11-25",
-    totalOrders: 11,
-    totalSpent: 4200,
-  },
-  {
-    id: "CUST012",
-    username: "David Kim",
-    firstName: "David",
-    lastName: "Kim",
-    email: "david.kim@gmail.com",
-    mobile: "XXXX901",
-    displayMobile: "+82 2 123 4567",
-    avatar: "D",
-    avatarColor: "#ffc107",
-    status: "Active",
-    joinDate: "2024-11-20",
-    totalOrders: 7,
-    totalSpent: 2800,
-  },
-];
+import {
+  FiHome,
+  FiSearch,
+  FiDownload,
+  FiChevronDown,
+  FiEye,
+  FiEdit2,
+  FiTrash2,
+} from "react-icons/fi";
+import {
+  getAllCustomers,
+  deleteCustomerById,
+} from "../api/customer/customerApi";
 
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState(dummyCustomers);
+  const [customers, setCustomers] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("All");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -199,20 +28,21 @@ export default function CustomersPage() {
 
     // Filter by status
     if (filter === "Active") {
-      data = data.filter(c => c.status === "Active");
+      data = data.filter((c) => c.status === "Active");
     } else if (filter === "Deactive") {
-      data = data.filter(c => c.status === "Inactive");
+      data = data.filter((c) => c.status === "Inactive");
     }
 
     // Search
     if (search.trim()) {
       const searchLower = search.toLowerCase();
-      data = data.filter(c =>
-        c.username.toLowerCase().includes(searchLower) ||
-        c.email.toLowerCase().includes(searchLower) ||
-        c.mobile.toLowerCase().includes(searchLower) ||
-        c.firstName.toLowerCase().includes(searchLower) ||
-        c.lastName.toLowerCase().includes(searchLower)
+      data = data.filter(
+        (c) =>
+          c.username.toLowerCase().includes(searchLower) ||
+          c.email.toLowerCase().includes(searchLower) ||
+          c.mobile.toLowerCase().includes(searchLower) ||
+          c.firstName.toLowerCase().includes(searchLower) ||
+          c.lastName.toLowerCase().includes(searchLower),
       );
     }
 
@@ -223,8 +53,62 @@ export default function CustomersPage() {
   const totalPages = Math.ceil(filteredCustomers.length / entriesPerPage);
   const indexOfLastEntry = currentPage * entriesPerPage;
   const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
-  const currentEntries = filteredCustomers.slice(indexOfFirstEntry, indexOfLastEntry);
+  const currentEntries = filteredCustomers.slice(
+    indexOfFirstEntry,
+    indexOfLastEntry,
+  );
 
+  useEffect(() => {
+    fetchCustomers();
+  }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      setLoading(true);
+
+      const res = await getAllCustomers();
+
+      console.log("Customers API Response:", res.data);
+
+      // 🔥 Extract array safely
+      let usersArray = [];
+
+      if (Array.isArray(res.data)) {
+        usersArray = res.data;
+      } else if (Array.isArray(res.data.data)) {
+        usersArray = res.data.data;
+      } else if (Array.isArray(res.data.customers)) {
+        usersArray = res.data.customers;
+      } else if (Array.isArray(res.data.users)) {
+        usersArray = res.data.users;
+      } else {
+        console.error("API did not return an array");
+        return;
+      }
+
+      const formatted = usersArray.map((user) => ({
+        id: user._id,
+        username: user.username || user.name || "User",
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        email: user.email || "",
+        mobile: user.mobile || "",
+        displayMobile: user.mobile || "",
+        avatar: (user.username || user.name || "U")[0].toUpperCase(),
+        avatarColor: "#3b82f6",
+        status: user.isActive ? "Active" : "Inactive",
+        joinDate: user.createdAt,
+        totalOrders: user.totalOrders || 0,
+        totalSpent: user.totalSpent || 0,
+      }));
+
+      setCustomers(formatted);
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   // Handle filter change
   const handleFilterChange = (newFilter) => {
     setFilter(newFilter);
@@ -254,19 +138,19 @@ export default function CustomersPage() {
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 4; i++) pages.push(i);
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       } else if (currentPage >= totalPages - 2) {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         for (let i = totalPages - 3; i <= totalPages; i++) pages.push(i);
       } else {
         pages.push(1);
-        pages.push('...');
+        pages.push("...");
         pages.push(currentPage - 1);
         pages.push(currentPage);
         pages.push(currentPage + 1);
-        pages.push('...');
+        pages.push("...");
         pages.push(totalPages);
       }
     }
@@ -275,28 +159,44 @@ export default function CustomersPage() {
   };
 
   // Handle delete
-  const handleDelete = (id) => {
-    if (window.confirm("Are you sure you want to delete this customer?")) {
-      setCustomers(customers.filter(c => c.id !== id));
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this customer?"))
+      return;
+
+    try {
+      await deleteCustomerById(id);
+
+      setCustomers((prev) => prev.filter((c) => c.id !== id));
       alert("Customer deleted successfully!");
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Delete failed!");
     }
   };
 
   // Handle download
   const handleDownload = () => {
     const csvContent = [
-      ["ID", "Username", "Email", "Mobile", "Status", "Total Orders", "Total Spent"],
-      ...filteredCustomers.map(c => [
+      [
+        "ID",
+        "Username",
+        "Email",
+        "Mobile",
+        "Status",
+        "Total Orders",
+        "Total Spent",
+      ],
+      ...filteredCustomers.map((c) => [
         c.id,
         c.username,
         c.email,
         c.displayMobile,
         c.status,
         c.totalOrders,
-        `$${c.totalSpent}`
-      ])
+        `$${c.totalSpent}`,
+      ]),
     ]
-      .map(row => row.map(cell => `"${cell}"`).join(","))
+      .map((row) => row.map((cell) => `"${cell}"`).join(","))
       .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -318,7 +218,9 @@ export default function CustomersPage() {
           <h1 className="text-2xl font-semibold text-gray-800">Customers</h1>
           <div className="flex items-center gap-2 text-sm">
             <FiHome className="text-blue-600" />
-            <a href="/dashboard" className="text-blue-600 hover:underline">Dashboard</a>
+            <a href="/dashboard" className="text-blue-600 hover:underline">
+              Dashboard
+            </a>
             <span className="text-gray-400">/</span>
             <span className="text-gray-600">Customers</span>
           </div>
@@ -416,7 +318,10 @@ export default function CustomersPage() {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {currentEntries.length > 0 ? (
                     currentEntries.map((customer) => (
-                      <tr key={customer.id} className="hover:bg-gray-50 transition-colors">
+                      <tr
+                        key={customer.id}
+                        className="hover:bg-gray-50 transition-colors"
+                      >
                         {/* Profile Column */}
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-3">
@@ -430,9 +335,7 @@ export default function CustomersPage() {
                               <p className="text-blue-600 font-medium hover:underline cursor-pointer truncate">
                                 {customer.username}
                               </p>
-                              <p className="text-gray-500 text-xs truncate">
-                                {customer.email} - {customer.id}
-                              </p>
+                              <p className="text-gray-500 text-xs truncate"></p>
                             </div>
                           </div>
                         </td>
@@ -446,12 +349,16 @@ export default function CustomersPage() {
 
                         {/* Mobile Column */}
                         <td className="px-4 py-3">
-                          <span className="text-gray-600">{customer.mobile}</span>
+                          <span className="text-gray-600">
+                            {customer.phone ? customer.phone : "N/A"}
+                          </span>
                         </td>
 
                         {/* Email Column */}
                         <td className="px-4 py-3">
-                          <span className="text-gray-600">{customer.email}</span>
+                          <span className="text-gray-600">
+                            {customer.email}
+                          </span>
                         </td>
 
                         {/* Status Column */}
@@ -495,7 +402,10 @@ export default function CustomersPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" className="px-4 py-8 text-center text-gray-500">
+                      <td
+                        colSpan="6"
+                        className="px-4 py-8 text-center text-gray-500"
+                      >
                         No customers found
                       </td>
                     </tr>
@@ -515,7 +425,9 @@ export default function CustomersPage() {
                     {Math.min(indexOfLastEntry, filteredCustomers.length)}
                   </span>
                   <span>of</span>
-                  <span className="font-medium">{filteredCustomers.length}</span>
+                  <span className="font-medium">
+                    {filteredCustomers.length}
+                  </span>
                   <span>entries</span>
                   <select
                     value={entriesPerPage}
@@ -534,8 +446,11 @@ export default function CustomersPage() {
 
                 <div className="flex items-center gap-1 flex-wrap">
                   {getPageNumbers().map((page, index) =>
-                    page === '...' ? (
-                      <span key={`ellipsis-${index}`} className="px-2 text-gray-500">
+                    page === "..." ? (
+                      <span
+                        key={`ellipsis-${index}`}
+                        className="px-2 text-gray-500"
+                      >
                         ...
                       </span>
                     ) : (
@@ -550,7 +465,7 @@ export default function CustomersPage() {
                       >
                         {page}
                       </button>
-                    )
+                    ),
                   )}
                 </div>
               </div>

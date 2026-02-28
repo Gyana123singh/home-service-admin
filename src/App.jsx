@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import "./App.css";
-import { RouterProvider, createBrowserRouter, Navigate } from "react-router-dom";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Navigate,
+} from "react-router-dom";
 import { useAuth } from "./hooks";
 import ScrollRestoration from "./components/ScrollToTop";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -22,7 +26,6 @@ import AddNewServicePage from "./pages/services/AddNewService";
 import BulkServiceUpdatePage from "./pages/services/BulkServiceUpdate";
 import ServiceCategoriesPage from "./pages/serviceCategories/ServiceCategories";
 import SlidersPage from "./pages/slider/Sliders";
-import FeaturedSectionPage from "./pages/featuredSection/FeaturedSection";
 import CustomersPage from "./pages/Customers";
 import TransactionsPage from "./pages/transactions/Transactions";
 import PaymentRefundsPage from "./pages/paymentRefunds/PaymentRefunds";
@@ -40,6 +43,8 @@ import SystemSettingsPage from "./pages/SystemSettings";
 import FAQsPage from "./pages/FAQs";
 import SystemUsersPage from "./pages/SystemUsers";
 import DatabaseBackupPage from "./pages/DatabaseBackup";
+import GoogleSuccess from "./api/googleSuccess/GoogleSuccess";
+import Coupons from "./pages/coupons/Coupons";
 
 function App() {
   const { isLoggedIn, isLoading } = useAuth();
@@ -186,13 +191,14 @@ function App() {
       ),
     },
     {
-      path: "/featured-section",
+      path: "/coupons",
       element: (
         <ProtectedRoute>
-          <FeaturedSectionPage />
+          <Coupons />
         </ProtectedRoute>
       ),
     },
+
     {
       path: "/customers",
       element: (
@@ -328,6 +334,10 @@ function App() {
           <DatabaseBackupPage />
         </ProtectedRoute>
       ),
+    },
+    {
+      path: "/google-success",
+      element: <GoogleSuccess />,
     },
   ]);
 

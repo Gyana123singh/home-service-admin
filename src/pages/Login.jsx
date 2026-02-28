@@ -2,19 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks";
-import { IMAGE_URLS } from "../constants";
 import logo1 from "../assets/home.jpg";
 import logo from "../assets/hirehand-rmbg.png";
+import { authApi } from "../api/auth/authApi";
 
 export default function LoginPage() {
   const [show, setShow] = useState(false);
-  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login, isLoggedIn } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (isLoggedIn) {
       navigate("/");
@@ -23,32 +22,38 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    if (phone && password) {
-      // Check credentials (demo - replace with real API call)
-      if (phone === "9876543210" && password === "12345678") {
-        setIsLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-        login({ phone, role: "admin", name: "Admin User" });
-        navigate("/"); // Redirect to dashboard
-        setIsLoading(false);
-      } else {
-        alert("Invalid credentials! Use:\nPhone: 9876543210\nPassword: 12345678");
-      }
-    } else {
-      alert("Please enter both phone number and password");
+
+    if (!email || !password) {
+      alert("Please enter email and password");
+      return;
     }
+
+    try {
+      setIsLoading(true);
+      const res = await authApi.login({ email, password });
+      const { token, admin } = res.data;
+
+      localStorage.setItem("access_token", token);
+      login(admin);
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ GOOGLE LOGIN HANDLER
+  const handleGoogleLogin = () => {
+    window.location.href = "http://localhost:5000/api/googleAuth/google";
   };
 
   return (
     <div className="min-h-screen flex sticky">
       {/* LEFT IMAGE */}
       <div className="hidden lg:block w-2/3 relative">
-        <img
-          // src={IMAGE_URLS.CLEANING}
-          src={logo1}
-          alt="cleaning"
-          className="w-full h-full object-cover"
-        />
+        <img src={logo1} alt="cleaning" className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-blue-900/40"></div>
       </div>
 
@@ -58,21 +63,21 @@ export default function LoginPage() {
           {/* LOGO */}
           <div className="flex flex-col items-center mb-8">
             <img src={logo} className="h-22 mb-2 scale-150" alt="logo" />
-            <p className="text-sm text-gray-800 font-semibold capitalize">Admin Panel of Home service</p>
+            <p className="text-sm text-gray-800 font-semibold capitalize">
+              Admin Panel of Home service
+            </p>
           </div>
 
           {/* FORM */}
           <form className="space-y-5" onSubmit={handleLogin}>
-            {/* PHONE */}
+            {/* EMAIL */}
             <div>
-              <label className="text-sm text-gray-600 block mb-1">
-                Phone Number
-              </label>
+              <label className="text-sm text-gray-600 block mb-1">Email</label>
               <input
-                type="text"
-                placeholder="Please enter registered phone number"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                type="email"
+                placeholder="Enter admin email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full border rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -100,71 +105,36 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* REMEMBER */}
-            <div className="flex justify-between items-center text-sm">
-              <label className="flex items-center gap-2 text-gray-600">
-                <input type="checkbox" />
-                Remember me
-              </label>
-              <a href="#" className="text-blue-600 cursor-pointer">
-                Forgot Password ?
-              </a>
-            </div>
-
-
             {/* LOGIN BUTTON */}
             <button
               type="submit"
               disabled={isLoading}
               className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white py-3 rounded-md font-semibold transition-colors flex items-center justify-center"
             >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
+              {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
 
-          {/* ADMIN + PROVIDER */}
-          <div className="grid grid-cols-1 gap-3 mt-4">
-            {/* ADMIN */}
-            <div className="bg-blue-600 text-white rounded-lg p-4 relative">
-              <h4 className="text-sm font-semibold">ADMIN LOGIN</h4>
-              <p className="text-xs mt-1">Mobile : 9876543210</p>
-              <p className="text-xs">Password : 12345678</p>
-
-              <div className="absolute right-3 top-3 bg-white text-blue-600 p-2 rounded-md">
-                <Edit size={14} />
-              </div>
-            </div>
-
-            {/* PROVIDER */}
-            {/* <div className="bg-gray-800 text-white rounded-lg p-4 relative">
-              <h4 className="text-sm font-semibold">PROVIDER LOGIN</h4>
-              <p className="text-xs mt-1">Mobile : 1234567890</p>
-              <p className="text-xs">Password : 12345678</p>
-
-              <div className="absolute right-3 top-3 bg-white text-gray-800 p-2 rounded-md">
-                <Edit size={14} />
-              </div>
-            </div> */}
+          {/* ✅ GOOGLE LOGIN BUTTON */}
+          <div className="mt-4">
+            <button
+              type="button"
+              onClick={handleGoogleLogin}
+              className="w-full border border-gray-300 hover:bg-gray-100 text-gray-700 py-3 rounded-md font-semibold transition-colors flex items-center justify-center gap-2"
+            >
+              <img
+                src="https://developers.google.com/identity/images/g-logo.png"
+                alt="Google"
+                className="h-5 w-5"
+              />
+              Sign in with Google
+            </button>
           </div>
 
           {/* FOOTER */}
           <p className="text-center text-xs text-gray-700 my-5">
             Copyright © {new Date().getFullYear()} Hirehand. All rights reserved.
           </p>
-
-          {/* NOTE */}
-          {/* <div className="bg-orange-400 text-white text-xs p-3 rounded-md text-center">
-            Note: If you cannot login here, please close the codecanyon frame by
-            clicking on <b>x Remove Frame</b> button or{" "}
-            <span className="underline cursor-pointer">Click here</span>
-          </div> */}
         </div>
       </div>
     </div>

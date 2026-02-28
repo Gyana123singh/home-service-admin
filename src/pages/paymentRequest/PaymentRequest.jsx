@@ -1,162 +1,293 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import AdminLayout from "../../components/layout/AdminLayout";
-import {
-  Search,
-  Filter,
-  Check,
-  HelpCircle,
-  Home,
-} from "lucide-react";
+import { Plus, Edit, Trash2, Star } from "lucide-react";
+import { subscriptionApi } from "../../api/payments/paymentsApi";
 
-export default function PaymentRequest() {
+export default function AdminSubscriptionPlansPage() {
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const [form, setForm] = useState({
+    name: "",
+    price: "",
+    duration: 30,
+    features: "",
+    stripePriceId: "",
+    isPopular: false,
+  });
+
+  const [editingId, setEditingId] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+
+  // ================= LOAD PLANS =================
+  const loadPlans = async () => {
+    try {
+      setLoading(true);
+      const res = await subscriptionApi.list();
+      setPlans(res.data.data || []);
+    } catch (err) {
+      console.error("Failed to load plans:", err);
+      alert("Failed to load plans");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPlans();
+  }, []);
+
+  // ================= HANDLE FORM CHANGE =================
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setForm({
+      ...form,
+      [name]: type === "checkbox" ? checked : value,
+    });
+  };
+
+  // ================= CREATE / UPDATE =================
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      name: form.name,
+      price: Number(form.price),
+      duration: Number(form.duration),
+      features: form.features
+        .split(",")
+        .map((f) => f.trim())
+        .filter(Boolean),
+      stripePriceId: form.stripePriceId,
+      isPopular: form.isPopular,
+    };
+
+    try {
+      if (editingId) {
+        await subscriptionApi.update(editingId, payload);
+        alert("Plan updated");
+      } else {
+        await subscriptionApi.create(payload);
+        alert("Plan created");
+      }
+
+      // Reset & reload
+      setForm({
+        name: "",
+        price: "",
+        duration: 30,
+        features: "",
+        stripePriceId: "",
+        isPopular: false,
+      });
+      setEditingId(null);
+      setShowForm(false);
+      loadPlans();
+    } catch (err) {
+      console.error("Save plan error:", err);
+      alert(err.response?.data?.message || "Failed to save plan");
+    }
+  };
+
+  // ================= EDIT =================
+  const handleEdit = (plan) => {
+    setEditingId(plan._id);
+    setForm({
+      name: plan.name,
+      price: plan.price,
+      duration: plan.duration,
+      features: (plan.features || []).join(", "),
+      stripePriceId: plan.stripePriceId,
+      isPopular: plan.isPopular,
+    });
+    setShowForm(true);
+  };
+
+  // ================= DELETE =================
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this plan?")) return;
+
+    try {
+      await subscriptionApi.remove(id);
+      alert("Plan deleted");
+      loadPlans();
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Failed to delete plan");
+    }
+  };
+
   return (
     <AdminLayout>
       <div className="p-6 bg-[#f6f7fb] min-h-screen">
 
         {/* PAGE HEADER */}
         <div className="bg-white rounded-xl border border-gray-300 px-6 py-4 mb-6 flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <h2 className="text-xl font-semibold">Payment Request</h2>
-            <HelpCircle className="text-blue-600" size={20} />
-          </div>
+          <h2 className="text-xl font-semibold">Subscription Plans</h2>
 
-          <div className="text-sm text-gray-500 flex items-center gap-1">
-            <Home size={16} className="text-blue-600" />
-            Dashboard / Provider / Payment Request
-          </div>
+          <button
+            onClick={() => {
+              setShowForm(true);
+              setEditingId(null);
+              setForm({
+                name: "",
+                price: "",
+                duration: 30,
+                features: "",
+                stripePriceId: "",
+                isPopular: false,
+              });
+            }}
+            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-md"
+          >
+            <Plus size={18} /> Add Plan
+          </button>
         </div>
 
-        {/* NOTE */}
-        <div className="bg-[#39b5ec] text-white px-6 py-4 rounded-lg mb-6 text-sm">
-          ⚠️ Note: To enable bulk status dropdown, you need to first select atleast one record in table by clicking on the checkbox.
-        </div>
+        {/* FORM */}
+        {showForm && (
+          <div className="bg-white border border-gray-300 rounded-xl p-6 mb-6">
+            <h3 className="font-semibold mb-4">
+              {editingId ? "Edit Plan" : "Create Plan"}
+            </h3>
 
-        {/* FILTER BAR */}
-        <div className="bg-white border border-gray-300 rounded-xl p-6 mb-6">
-
-          <div className="flex flex-wrap gap-4 items-center">
-
-            {/* SEARCH */}
-            <div className="flex">
+            <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
               <input
-                placeholder="Search here!"
-                className="border border-gray-300 rounded-l-md px-4 py-2 w-[260px] outline-none"
+                name="name"
+                placeholder="Plan Name"
+                value={form.name}
+                onChange={handleChange}
+                className="border p-2 rounded"
+                required
               />
-              <button className="bg-[#0d6efd] text-white px-4 rounded-r-md">
-                <Search size={18} />
-              </button>
-            </div>
 
-            {/* FILTER */}
-            <button className="border border-gray-300 px-3 py-2 rounded-md">
-              <Filter size={18} />
-            </button>
+              <input
+                name="price"
+                type="number"
+                placeholder="Price"
+                value={form.price}
+                onChange={handleChange}
+                className="border p-2 rounded"
+                required
+              />
 
-            {/* DOWNLOAD */}
-            <button className="border border-gray-300 px-4 py-2 rounded-md text-sm">
-              Download ▾
-            </button>
+              <input
+                name="duration"
+                type="number"
+                placeholder="Duration (days)"
+                value={form.duration}
+                onChange={handleChange}
+                className="border p-2 rounded"
+              />
 
-            {/* STATUS */}
-            <select className="border border-gray-300 px-4 py-2 rounded-md text-sm w-[200px]">
-              <option>Pending</option>
-              <option>Settled</option>
-            </select>
+              <input
+                name="stripePriceId"
+                placeholder="Stripe Price ID"
+                value={form.stripePriceId}
+                onChange={handleChange}
+                className="border p-2 rounded"
+                required
+              />
+
+              <input
+                name="features"
+                placeholder="Features (comma separated)"
+                value={form.features}
+                onChange={handleChange}
+                className="border p-2 rounded col-span-2"
+              />
+
+              <label className="flex items-center gap-2 col-span-2">
+                <input
+                  type="checkbox"
+                  name="isPopular"
+                  checked={form.isPopular}
+                  onChange={handleChange}
+                />
+                Mark as Popular
+              </label>
+
+              <div className="col-span-2 flex gap-3">
+                <button
+                  type="submit"
+                  className="bg-green-600 text-white px-4 py-2 rounded"
+                >
+                  {editingId ? "Update Plan" : "Create Plan"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="border px-4 py-2 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
+        )}
 
-          {/* TABLE */}
-          <div className="mt-6 overflow-x-auto">
+        {/* TABLE */}
+        <div className="bg-white border border-gray-300 rounded-xl p-6">
+          {loading ? (
+            <p>Loading plans...</p>
+          ) : (
             <table className="w-full text-sm border-collapse">
               <thead>
                 <tr className="bg-[#f2f2f6] text-gray-600">
-                  <th className="p-3 text-center">
-                    <input type="checkbox" />
-                  </th>
-                  <th className="p-3">User id</th>
-                  <th className="p-3">Provider Name</th>
-                  <th className="p-3">User Type</th>
-                  <th className="p-3">Payment Address</th>
-                  <th className="p-3">Amount</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3 text-center">Operations</th>
+                  <th className="p-3 text-left">Name</th>
+                  <th className="p-3">Price</th>
+                  <th className="p-3">Duration</th>
+                  <th className="p-3">Popular</th>
+                  <th className="p-3">Stripe Price ID</th>
+                  <th className="p-3 text-center">Actions</th>
                 </tr>
               </thead>
-
               <tbody>
+                {plans.map((plan) => (
+                  <tr key={plan._id} className="border-b">
+                    <td className="p-3 font-medium">{plan.name}</td>
+                    <td className="p-3">₹{plan.price}</td>
+                    <td className="p-3">{plan.duration} days</td>
+                    <td className="p-3">
+                      {plan.isPopular ? (
+                        <span className="inline-flex items-center gap-1 text-yellow-600">
+                          <Star size={14} /> Popular
+                        </span>
+                      ) : (
+                        "No"
+                      )}
+                    </td>
+                    <td className="p-3 text-xs">{plan.stripePriceId}</td>
+                    <td className="p-3 text-center flex justify-center gap-3">
+                      <button
+                        onClick={() => handleEdit(plan)}
+                        className="text-blue-600"
+                      >
+                        <Edit size={18} />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(plan._id)}
+                        className="text-red-600"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
 
-                {/* ROW 1 */}
-                <Row
-                  status="Settled"
-                  statusColor="orange"
-                  amount="100"
-                  address="UPI@gmail.com"
-                />
-
-                {/* ROW 2 */}
-                <Row
-                  status="Pending"
-                  amount="1120"
-                  address="1122 1222 1112 1122"
-                />
-
-                <Row
-                  status="Pending"
-                  amount="0"
-                  address="abu"
-                />
-
-                <Row
-                  status="Pending"
-                  amount="0"
-                  address=""
-                />
-
-                <Row
-                  status="Pending"
-                  amount="610"
-                  address="bbb"
-                />
-
+                {plans.length === 0 && (
+                  <tr>
+                    <td colSpan="6" className="text-center p-6 text-gray-500">
+                      No plans created yet
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
-          </div>
+          )}
         </div>
+
       </div>
     </AdminLayout>
-  );
-}
-
-/* ===================== ROW ===================== */
-
-function Row({ status, amount, address, statusColor }) {
-  return (
-    <tr className="border-b border-gray-200">
-      <td className="p-4 text-center">
-        <input type="checkbox" />
-      </td>
-      <td className="p-4">50</td>
-      <td className="p-4">Electric</td>
-      <td className="p-4 text-blue-600">Provider</td>
-      <td className="p-4">{address}</td>
-      <td className="p-4">{amount}</td>
-      <td className="p-4">
-        {status === "Settled" ? (
-          <span className="border border-orange-400 text-orange-500 px-3 py-1 rounded-md text-xs">
-            Settled
-          </span>
-        ) : (
-          <span className="border border-gray-600 px-3 py-1 rounded-md text-xs">
-            Pending
-          </span>
-        )}
-      </td>
-      <td className="p-4 text-center">
-        {status === "Pending" && (
-          <button className="bg-green-500 text-white p-2 rounded-md">
-            <Check size={16} />
-          </button>
-        )}
-      </td>
-    </tr>
   );
 }

@@ -41,7 +41,11 @@ export default function Sidebar({ isOpen }) {
     >
       {/* LOGO */}
       <div className="px-6 py-5 border-b border-[#f1f1f1] flex items-center justify-center gap-3">
-        <img src={logo} className="h-10 w-10 scale-150 object-contain" alt="logo" />
+        <img
+          src={logo}
+          className="h-10 w-10 scale-150 object-contain"
+          alt="logo"
+        />
 
         {isOpen && (
           <span className="text-lg font-semibold tracking-wide text-gray-800">
@@ -70,9 +74,9 @@ export default function Sidebar({ isOpen }) {
           toggleMenu={toggleMenu}
           isOpen={isOpen}
           isAnySubitemActive={
-            location.pathname === "/providers-list" ||
-            location.pathname === "/providers/add" ||
-            location.pathname === "/providers/bulk-update"
+            location.pathname === "/providers-list"
+            // location.pathname === "/providers/add" ||
+            // location.pathname === "/providers/bulk-update"
           }
         >
           <SubItem
@@ -80,17 +84,17 @@ export default function Sidebar({ isOpen }) {
             onClick={() => handleNavigation("/providers-list")}
             isActive={location.pathname === "/providers-list"}
           />
-          <SubItem
+          {/* <SubItem
             text="Add New Providers"
             onClick={() => handleNavigation("/providers/add")}
             isActive={location.pathname === "/providers/add"}
-          />
-          <SubItem
+          /> */}
+          {/* <SubItem
             text="Bulk Provider Update"
             onClick={() => handleNavigation("/providers/bulk-update")}
             isActive={location.pathname === "/providers/bulk-update"}
             muted
-          />
+          /> */}
         </Dropdown>
 
         <MenuItem
@@ -193,7 +197,7 @@ export default function Sidebar({ isOpen }) {
             onClick={() => handleNavigation("/services")}
             isActive={location.pathname === "/services"}
           />
-          <SubItem
+          {/* <SubItem
             text="Add New Service"
             onClick={() => handleNavigation("/services/add")}
             isActive={location.pathname === "/services/add"}
@@ -203,7 +207,7 @@ export default function Sidebar({ isOpen }) {
             onClick={() => handleNavigation("/services/bulk-update")}
             isActive={location.pathname === "/services/bulk-update"}
             muted
-          />
+          /> */}
         </Dropdown>
 
         <MenuItem
@@ -223,11 +227,11 @@ export default function Sidebar({ isOpen }) {
           isActive={location.pathname === "/sliders"}
         />
         <MenuItem
-          icon={<Grid size={18} />}
-          label="Featured Section"
+          icon={<Image size={18} />}
+          label="Coupons"
           isOpen={isOpen}
-          onClick={() => handleNavigation("/featured-section")}
-          isActive={location.pathname === "/featured-section"}
+          onClick={() => handleNavigation("/coupons")}
+          isActive={location.pathname === "/coupons"}
         />
 
         {isOpen && section("Customer Management")}
@@ -252,12 +256,12 @@ export default function Sidebar({ isOpen }) {
           onClick={() => handleNavigation("/payment-refunds")}
           isActive={location.pathname === "/payment-refunds"}
         />
-        <MenuItem 
-          icon={<Home size={18}/>}
+        <MenuItem
+          icon={<Home size={18} />}
           label="Addresses"
-          isOpen={isOpen} 
-          onClick={()=>handleNavigation("/addresses")}
-          isActive={location.pathname==="/addresses"}  
+          isOpen={isOpen}
+          onClick={() => handleNavigation("/addresses")}
+          isActive={location.pathname === "/addresses"}
         />
 
         {isOpen && section("Support Management")}
@@ -271,16 +275,6 @@ export default function Sidebar({ isOpen }) {
         <MenuItem
           icon={<ClipboardList size={18} />}
           label="Chat"
-          isOpen={isOpen}
-        />
-        <MenuItem
-          icon={<Layers size={18} />}
-          label="Reporting Reasons"
-          isOpen={isOpen}
-        />
-        <MenuItem
-          icon={<Users size={18} />}
-          label="Blocked Users"
           isOpen={isOpen}
         />
 
@@ -346,11 +340,11 @@ export default function Sidebar({ isOpen }) {
             isActive={location.pathname === "/subscriptions"}
           />
 
-          <SubItem
+          {/* <SubItem
             text="Subscriber List"
             onClick={() => handleNavigation("/subscriber-list")}
             isActive={location.pathname === "/subscriber-list"}
-          />
+          /> */}
 
           <SubItem
             text="Add Subscription"
@@ -359,50 +353,6 @@ export default function Sidebar({ isOpen }) {
           />
         </Dropdown>
 
-        {isOpen && section("Blog Management")}
-
-        <Dropdown
-          icon={<FileText size={18} />}
-          label="Blog"
-          menu="blog"
-          openMenu={openMenu}
-          toggleMenu={toggleMenu}
-          isOpen={isOpen}
-          isAnySubitemActive={
-            location.pathname === "/blogs" ||
-            location.pathname === "/add-blog" ||
-            location.pathname === "/blog-categories"
-          }
-        >
-          <SubItem
-            text="Blog List"
-            onClick={() => handleNavigation("/blogs")}
-            isActive={location.pathname === "/blogs"}
-          />
-
-          <SubItem
-            text="Add New Blog"
-            onClick={() => handleNavigation("/add-blog")}
-            isActive={location.pathname === "/add-blog"}
-          />
-
-          <SubItem
-            text="Blog Categories"
-            onClick={() => handleNavigation("/blog-categories")}
-            isActive={location.pathname === "/blog-categories"}
-          />
-        </Dropdown>
-
-        {isOpen && section("Media Section Management")}
-
-        <MenuItem
-          icon={<Image size={18} />}
-          label="Gallery"
-          isOpen={isOpen}
-          onClick={() => handleNavigation("/gallery")}
-          isActive={location.pathname === "/gallery"}
-        />
-
         {isOpen && section("System Management")}
         <MenuItem
           icon={<Settings size={18} />}
@@ -410,27 +360,6 @@ export default function Sidebar({ isOpen }) {
           isOpen={isOpen}
           onClick={() => handleNavigation("/system-settings")}
           isActive={location.pathname === "/system-settings"}
-        />
-        <MenuItem
-          icon={<HelpCircle size={18} />}
-          label="Faqs"
-          isOpen={isOpen}
-          onClick={() => handleNavigation("/faqs")}
-          isActive={location.pathname === "/faqs"}
-        />
-        <MenuItem
-          icon={<Users size={18} />}
-          label="System Users"
-          isOpen={isOpen}
-          onClick={() => handleNavigation("/system-users")}
-          isActive={location.pathname === "/system-users"}
-        />
-        <MenuItem
-          icon={<Database size={18} />}
-          label="Database Backup"
-          isOpen={isOpen}
-          onClick={() => handleNavigation("/database-backup")}
-          isActive={location.pathname === "/database-backup"}
         />
       </div>
     </aside>
