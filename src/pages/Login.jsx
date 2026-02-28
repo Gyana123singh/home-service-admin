@@ -46,7 +46,7 @@ export default function LoginPage() {
 
   // ✅ GOOGLE LOGIN HANDLER
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5000/api/googleAuth/google";
+    window.location.href = "https://home-service-vndv.onrender.com/api/googleAuth/google";
   };
 
   return (
